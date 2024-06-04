@@ -24,18 +24,30 @@ def sort_letters(chars: Dict[str, int]):
     return sorted(letters, key=lambda x: x[1], reverse=True)
 
 
-def report(filepath: str, words: List[str], chars: Dict[str, int]):
-    print(f"*** Begin report of {filepath} ***")
-    print()
-    print(f"There were {len(words)} words found in the document.")
-    print()
-    print("Letter  |  Frequency")
-    print("-------------------------")
+def gen_report(filepath: str, words: List[str], chars: Dict[str, int]) -> List[str]:
+    output = []
+    output.append(f"*** Begin report of {filepath} ***")
+    output.append("")
+    output.append(f"There were {len(words)} words found in the document.")
+    output.append("")
+    output.append("Letter  |  Frequency")
+    output.append("-------------------------")
 
     letters = sort_letters(chars)
     for x in letters:
-        print(f"   {x[0]}    |    {x[1]}")
-    return
+        output.append(f"   {x[0]}    |    {x[1]}")
+
+    return output
+
+
+def write_report(filename: str, report: List[str]):
+    try:
+        f = open(filename, "x", encoding="utf-8")
+    except OSError:
+        f = open(filename, "w", encoding="utf-8")
+
+    for line in report:
+        print(line, file=f)
 
 
 def main():
@@ -48,8 +60,13 @@ def main():
     print(f"\ncharacters in {path}:\n{chars}")
     print()
 
-    report(path, words, chars)
+    franken_report = gen_report(path, words, chars)
+    for line in franken_report:
+        print(line)
     print()
+
+    output = "./reports/report.txt"
+    write_report(output, franken_report)
 
 
 main()
